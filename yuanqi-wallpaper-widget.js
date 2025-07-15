@@ -8,7 +8,7 @@ const WIDGET_CONFIG = {
     name: '元气壁纸',
     version: '1.0.0',
     description: '高质量动态和静态壁纸获取工具',
-    author: 'FWD Team',
+    author: 'VEUS.5',
     baseUrl: 'https://mbizhi.cheetahfun.com',
     cdnUrl: 'https://img-baofun.zhhainiao.com',
     cacheDuration: 30 * 60 * 1000, // 30分钟缓存
