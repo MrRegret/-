@@ -1,7 +1,7 @@
 /**
  * ForwardWidget - 动态壁纸组件
  * 符合FWD开发规范的完整实现
- * @author ForwardWidget Team
+ * @author VEUS.5
  * @version 2.0.0
  */
 
