@@ -3,537 +3,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>元气壁纸 ForwardWidget 演示</title>
+    <title>元气壁纸 ForwardWidget 测试</title>
     <style>
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
-
-        .demo-header {
+        
+        h1 {
             text-align: center;
-            color: white;
+            color: #333;
             margin-bottom: 30px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.5em;
         }
-
-        .demo-header h1 {
-            font-size: 36px;
-            margin: 0;
-            margin-bottom: 10px;
-        }
-
-        .demo-header p {
-            font-size: 18px;
-            opacity: 0.9;
-            margin: 0;
-        }
-
-        .demo-controls {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
+        
+        .widget-info {
+            background: #f8f9fa;
             padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #007bff;
         }
-
-        .demo-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            margin: 5px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .module-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .module-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .module-title::before {
+            content: "🎨";
+            margin-right: 8px;
+        }
+        
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             font-size: 14px;
-            backdrop-filter: blur(10px);
         }
-
-        .demo-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .demo-section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+        
+        button {
+            background: linear-gradient(45deg, #007bff, #0056b3);
             color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
-
-        .demo-section h3 {
-            margin-top: 0;
-            color: #FFE894;
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
         }
-
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .results {
+            margin-top: 30px;
+        }
+        
         .wallpaper-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
-
+        
         .wallpaper-item {
-            background: white;
+            background: #fff;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
-
+        
         .wallpaper-item:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
-
+        
         .wallpaper-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
+            border-radius: 10px 10px 0 0;
         }
-
+        
         .wallpaper-info {
             padding: 15px;
-            color: #333;
         }
-
+        
         .wallpaper-title {
-            margin: 0 0 10px 0;
-            font-size: 16px;
-            font-weight: 600;
+            font-weight: bold;
             color: #333;
+            margin-bottom: 5px;
         }
-
+        
         .wallpaper-meta {
             font-size: 12px;
             color: #666;
-            margin-bottom: 10px;
         }
-
-        .wallpaper-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn {
+        
+        .metadata-display {
             background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            color: #495057;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 12px;
-            flex: 1;
-        }
-
-        .action-btn:hover {
-            background: #e9ecef;
-            transform: translateY(-1px);
-        }
-
-        .status-display {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
             padding: 15px;
-            margin-top: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
             font-family: 'Courier New', monospace;
             font-size: 12px;
-            color: #E0E0E0;
-            max-height: 200px;
-            overflow-y: auto;
+            overflow-x: auto;
         }
-
-        .loading {
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 10px;
+        }
+        
+        .stat-item {
             text-align: center;
-            padding: 40px;
-            color: white;
-            font-size: 16px;
         }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 15px;
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007bff;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .error {
-            background: rgba(255, 0, 0, 0.1);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            color: #ff6b6b;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-
-        .success {
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            color: #51cf66;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .demo-header h1 {
-                font-size: 28px;
-            }
-            
-            .demo-header p {
-                font-size: 16px;
-            }
-            
-            .demo-controls {
-                padding: 15px;
-            }
-            
-            .demo-btn {
-                display: block;
-                width: 100%;
-                margin: 8px 0;
-            }
-            
-            .wallpaper-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 15px;
-            }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <div class="demo-header">
-        <h1>🎨 元气壁纸 ForwardWidget</h1>
-        <p>ForwardWidget标准格式演示 - 支持随机获取、分类浏览、关键词搜索</p>
-    </div>
-
-    <div class="demo-controls">
-        <h3 style="color: white; margin-top: 0;">🛠️ 功能演示</h3>
-        <button class="demo-btn" onclick="testRandomWallpapers()">🎲 测试随机壁纸</button>
-        <button class="demo-btn" onclick="testCategoryWallpapers()">📂 测试分类壁纸</button>
-        <button class="demo-btn" onclick="testSearchWallpapers()">🔍 测试搜索壁纸</button>
-        <button class="demo-btn" onclick="showWidgetMetadata()">📋 查看组件信息</button>
-        <button class="demo-btn" onclick="clearResults()">🗑️ 清空结果</button>
-    </div>
-
-    <div id="random-section" class="demo-section">
-        <h3>🎲 随机壁纸模块</h3>
-        <p>获取随机推荐的高质量壁纸，支持6/12/18/24张选择</p>
-        <div id="random-results">
-            <div class="loading">点击"测试随机壁纸"开始演示</div>
+    <div class="container">
+        <h1>元气壁纸 ForwardWidget 测试</h1>
+        
+        <div class="widget-info">
+            <h3>Widget信息</h3>
+            <div id="widgetMetadata"></div>
+        </div>
+        
+        <div class="control-panel">
+            <!-- 随机壁纸模块 -->
+            <div class="module-card">
+                <div class="module-title">随机壁纸</div>
+                <select id="randomCount">
+                    <option value="6">6张</option>
+                    <option value="12">12张</option>
+                    <option value="18">18张</option>
+                </select>
+                <button onclick="testRandomWallpapers()">获取随机壁纸</button>
+                <div id="randomStatus"></div>
+            </div>
+            
+            <!-- 分类壁纸模块 -->
+            <div class="module-card">
+                <div class="module-title">分类壁纸</div>
+                <select id="categorySelect">
+                    <option value="4k">4K壁纸</option>
+                    <option value="landscape">风景壁纸</option>
+                    <option value="anime">动漫壁纸</option>
+                    <option value="beauty">美女壁纸</option>
+                    <option value="animals">动物壁纸</option>
+                    <option value="games">游戏壁纸</option>
+                    <option value="fresh">清新壁纸</option>
+                    <option value="others">其他壁纸</option>
+                </select>
+                <button onclick="testCategoryWallpapers()">获取分类壁纸</button>
+                <div id="categoryStatus"></div>
+            </div>
+            
+            <!-- 搜索壁纸模块 -->
+            <div class="module-card">
+                <div class="module-title">搜索壁纸</div>
+                <select id="searchKeyword">
+                    <option value="风景">风景</option>
+                    <option value="动漫">动漫</option>
+                    <option value="美女">美女</option>
+                    <option value="动物">动物</option>
+                    <option value="游戏">游戏</option>
+                    <option value="清新">清新</option>
+                </select>
+                <button onclick="testSearchWallpapers()">搜索壁纸</button>
+                <div id="searchStatus"></div>
+            </div>
+        </div>
+        
+        <div class="results">
+            <h3>结果展示</h3>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">总壁纸数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="requestCount">0</div>
+                    <div class="stat-label">请求次数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="cacheHits">0</div>
+                    <div class="stat-label">缓存命中</div>
+                </div>
+            </div>
+            <div class="wallpaper-grid" id="wallpaperGrid"></div>
         </div>
     </div>
 
-    <div id="category-section" class="demo-section">
-        <h3>📂 分类壁纸模块</h3>
-        <p>根据分类获取专题壁纸，支持8大分类：4K超清、风景自然、动漫二次元等</p>
-        <div id="category-results">
-            <div class="loading">点击"测试分类壁纸"开始演示</div>
-        </div>
-    </div>
-
-    <div id="search-section" class="demo-section">
-        <h3>🔍 搜索壁纸模块</h3>
-        <p>根据关键词搜索相关壁纸，智能匹配分类和内容</p>
-        <div id="search-results">
-            <div class="loading">点击"测试搜索壁纸"开始演示</div>
-        </div>
-    </div>
-
-    <div class="demo-section">
-        <h3>📊 状态信息</h3>
-        <div id="status-info" class="status-display">
-            等待测试开始...
-        </div>
-    </div>
-
-    <!-- 引入ForwardWidget脚本 -->
     <script src="yuanqi-wallpaper-widget.js"></script>
-
     <script>
-        let statusElement = document.getElementById('status-info');
+        let requestCount = 0;
+        let totalWallpapers = 0;
+        let cacheHits = 0;
 
-        // 更新状态显示
-        function updateStatus(message) {
-            const timestamp = new Date().toLocaleTimeString();
-            statusElement.innerHTML += `[${timestamp}] ${message}\n`;
-            statusElement.scrollTop = statusElement.scrollHeight;
+        // 显示Widget元数据
+        function displayWidgetMetadata() {
+            const metadataDiv = document.getElementById('widgetMetadata');
+            metadataDiv.innerHTML = `
+                <strong>ID:</strong> ${WidgetMetadata.id}<br>
+                <strong>标题:</strong> ${WidgetMetadata.title}<br>
+                <strong>描述:</strong> ${WidgetMetadata.description}<br>
+                <strong>作者:</strong> ${WidgetMetadata.author}<br>
+                <strong>版本:</strong> ${WidgetMetadata.version}<br>
+                <strong>模块数量:</strong> ${WidgetMetadata.modules.length}
+            `;
+        }
+
+        // 显示状态信息
+        function showStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = `status ${type}`;
+            element.textContent = message;
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            document.getElementById('totalCount').textContent = totalWallpapers;
+            document.getElementById('requestCount').textContent = requestCount;
+            document.getElementById('cacheHits').textContent = cacheHits;
         }
 
         // 显示壁纸结果
-        function displayWallpapers(wallpapers, containerId) {
-            const container = document.getElementById(containerId);
+        function displayWallpapers(wallpapers, source) {
+            const grid = document.getElementById('wallpaperGrid');
             
             if (!wallpapers || wallpapers.length === 0) {
-                container.innerHTML = '<div class="error">❌ 没有获取到壁纸数据</div>';
+                grid.innerHTML = '<p style="text-align: center; color: #666;">没有找到壁纸</p>';
                 return;
             }
 
-            // 检查是否是错误信息
-            if (wallpapers[0].type === 'error') {
-                container.innerHTML = `<div class="error">❌ ${wallpapers[0].title}: ${wallpapers[0].description}</div>`;
-                return;
-            }
+            totalWallpapers = wallpapers.length;
+            updateStats();
 
-            const grid = document.createElement('div');
-            grid.className = 'wallpaper-grid';
-
-            wallpapers.forEach(wallpaper => {
-                const item = document.createElement('div');
-                item.className = 'wallpaper-item';
-                
-                const imageUrl = wallpaper.coverUrl || wallpaper.imageUrl || wallpaper.videoUrl;
-                const isVideo = wallpaper.type === 'video';
-                
-                item.innerHTML = `
-                    ${isVideo ? 
-                        `<video class="wallpaper-image" poster="${wallpaper.coverUrl}" controls muted>
-                             <source src="${wallpaper.videoUrl}" type="video/mp4">
-                         </video>` :
-                        `<img src="${imageUrl}" alt="${wallpaper.title}" class="wallpaper-image" 
-                              onerror="this.src='data:image/svg+xml,<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"100\\" height=\\"100\\"><text y=\\"50\\" font-size=\\"14\\" fill=\\"%23999\\">加载失败</text></svg>'">`
-                    }
-                    <div class="wallpaper-info">
-                        <h4 class="wallpaper-title">${wallpaper.title}</h4>
-                        <div class="wallpaper-meta">
-                            ID: ${wallpaper.id} | 类型: ${wallpaper.type} | 来源: ${wallpaper.source || '元气壁纸'}
-                        </div>
-                        <div class="wallpaper-actions">
-                            <button class="action-btn" onclick="downloadWallpaper('${imageUrl}', '${wallpaper.title}')">💾 下载</button>
-                            <button class="action-btn" onclick="previewWallpaper('${imageUrl}', '${wallpaper.title}')">👁️ 预览</button>
-                            ${wallpaper.detailUrl ? 
-                                `<button class="action-btn" onclick="window.open('${wallpaper.detailUrl}', '_blank')">🔗 详情</button>` : 
-                                ''
-                            }
+            const wallpaperHTML = wallpapers.map(wallpaper => {
+                const imageUrl = wallpaper.coverUrl || wallpaper.imageUrl;
+                return `
+                    <div class="wallpaper-item">
+                        <img src="${imageUrl}" alt="${wallpaper.title}" class="wallpaper-image" 
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2Y4ZjlmYSIvPiA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNmM3NTdkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5Zu+54mH5Yqg6L295aSx6LSlPC90ZXh0PiA8L3N2Zz4='">
+                        <div class="wallpaper-info">
+                            <div class="wallpaper-title">${wallpaper.title}</div>
+                            <div class="wallpaper-meta">
+                                ID: ${wallpaper.id}<br>
+                                类型: ${wallpaper.type}<br>
+                                来源: ${source}
+                            </div>
                         </div>
                     </div>
                 `;
-                grid.appendChild(item);
-            });
+            }).join('');
 
-            container.innerHTML = '';
-            container.appendChild(grid);
+            grid.innerHTML = wallpaperHTML;
         }
 
         // 测试随机壁纸
         async function testRandomWallpapers() {
-            updateStatus("🎲 开始测试随机壁纸功能...");
-            document.getElementById('random-results').innerHTML = '<div class="loading"><div class="loading-spinner"></div>正在获取随机壁纸...</div>';
-            
+            const count = document.getElementById('randomCount').value;
+            showStatus('randomStatus', '正在获取随机壁纸...', 'loading');
+            requestCount++;
+            updateStats();
+
             try {
-                // 测试不同数量参数
-                const params = { count: "12" };
-                const wallpapers = await getRandomWallpapers(params);
-                
-                updateStatus(`✅ 随机壁纸获取成功，共 ${wallpapers.length} 张`);
-                displayWallpapers(wallpapers, 'random-results');
-                
+                const startTime = Date.now();
+                const wallpapers = await getRandomWallpapers({ count });
+                const duration = Date.now() - startTime;
+
+                if (wallpapers && wallpapers.length > 0) {
+                    showStatus('randomStatus', `成功获取 ${wallpapers.length} 张壁纸 (${duration}ms)`, 'success');
+                    displayWallpapers(wallpapers, '随机壁纸');
+                } else {
+                    showStatus('randomStatus', '未获取到壁纸数据', 'error');
+                }
             } catch (error) {
-                updateStatus(`❌ 随机壁纸测试失败: ${error.message}`);
-                document.getElementById('random-results').innerHTML = `<div class="error">❌ 测试失败: ${error.message}</div>`;
+                showStatus('randomStatus', `错误: ${error.message}`, 'error');
             }
         }
 
         // 测试分类壁纸
         async function testCategoryWallpapers() {
-            updateStatus("📂 开始测试分类壁纸功能...");
-            document.getElementById('category-results').innerHTML = '<div class="loading"><div class="loading-spinner"></div>正在获取分类壁纸...</div>';
-            
+            const category = document.getElementById('categorySelect').value;
+            showStatus('categoryStatus', '正在获取分类壁纸...', 'loading');
+            requestCount++;
+            updateStats();
+
             try {
-                // 测试风景分类
-                const params = { category: "2", count: "6" };
-                const wallpapers = await getCategoryWallpapers(params);
-                
-                updateStatus(`✅ 分类壁纸获取成功，共 ${wallpapers.length} 张`);
-                displayWallpapers(wallpapers, 'category-results');
-                
+                const startTime = Date.now();
+                const wallpapers = await getCategoryWallpapers({ category });
+                const duration = Date.now() - startTime;
+
+                if (wallpapers && wallpapers.length > 0) {
+                    showStatus('categoryStatus', `成功获取 ${wallpapers.length} 张壁纸 (${duration}ms)`, 'success');
+                    displayWallpapers(wallpapers, `分类: ${category}`);
+                } else {
+                    showStatus('categoryStatus', '未获取到壁纸数据', 'error');
+                }
             } catch (error) {
-                updateStatus(`❌ 分类壁纸测试失败: ${error.message}`);
-                document.getElementById('category-results').innerHTML = `<div class="error">❌ 测试失败: ${error.message}</div>`;
+                showStatus('categoryStatus', `错误: ${error.message}`, 'error');
             }
         }
 
         // 测试搜索壁纸
         async function testSearchWallpapers() {
-            updateStatus("🔍 开始测试搜索壁纸功能...");
-            document.getElementById('search-results').innerHTML = '<div class="loading"><div class="loading-spinner"></div>正在搜索壁纸...</div>';
-            
+            const keyword = document.getElementById('searchKeyword').value;
+            showStatus('searchStatus', '正在搜索壁纸...', 'loading');
+            requestCount++;
+            updateStats();
+
             try {
-                // 测试风景搜索
-                const params = { keyword: "风景", count: "6" };
-                const wallpapers = await searchWallpapers(params);
-                
-                updateStatus(`✅ 搜索壁纸获取成功，共 ${wallpapers.length} 张`);
-                displayWallpapers(wallpapers, 'search-results');
-                
-            } catch (error) {
-                updateStatus(`❌ 搜索壁纸测试失败: ${error.message}`);
-                document.getElementById('search-results').innerHTML = `<div class="error">❌ 测试失败: ${error.message}</div>`;
-            }
-        }
+                const startTime = Date.now();
+                const wallpapers = await searchWallpapers({ keyword });
+                const duration = Date.now() - startTime;
 
-        // 显示组件元数据
-        function showWidgetMetadata() {
-            updateStatus("📋 显示组件元数据信息...");
-            
-            if (typeof WidgetMetadata !== 'undefined') {
-                updateStatus("📊 组件信息:");
-                updateStatus(`   ID: ${WidgetMetadata.id}`);
-                updateStatus(`   标题: ${WidgetMetadata.title}`);
-                updateStatus(`   版本: ${WidgetMetadata.version}`);
-                updateStatus(`   作者: ${WidgetMetadata.author}`);
-                updateStatus(`   网站: ${WidgetMetadata.site}`);
-                updateStatus(`   模块数量: ${WidgetMetadata.modules.length}`);
-                
-                WidgetMetadata.modules.forEach((module, index) => {
-                    updateStatus(`   模块${index + 1}: ${module.title} (${module.name})`);
-                    updateStatus(`     函数: ${module.functionName}`);
-                    updateStatus(`     参数数量: ${module.params.length}`);
-                });
-                
-                updateStatus("✅ 组件元数据显示完成");
-            } else {
-                updateStatus("❌ 未找到WidgetMetadata对象");
-            }
-        }
-
-        // 清空所有结果
-        function clearResults() {
-            document.getElementById('random-results').innerHTML = '<div class="loading">点击"测试随机壁纸"开始演示</div>';
-            document.getElementById('category-results').innerHTML = '<div class="loading">点击"测试分类壁纸"开始演示</div>';
-            document.getElementById('search-results').innerHTML = '<div class="loading">点击"测试搜索壁纸"开始演示</div>';
-            statusElement.innerHTML = '已清空所有结果...\n';
-            updateStatus("🗑️ 所有结果已清空");
-        }
-
-        // 下载壁纸
-        function downloadWallpaper(imageUrl, title) {
-            try {
-                const link = document.createElement('a');
-                link.href = imageUrl;
-                link.download = `${title.replace(/[^\w\s-]/g, '')}.jpg`;
-                link.target = '_blank';
-                
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                updateStatus(`💾 开始下载: ${title}`);
-            } catch (error) {
-                updateStatus(`❌ 下载失败: ${error.message}`);
-            }
-        }
-
-        // 预览壁纸
-        function previewWallpaper(imageUrl, title) {
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.9);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 10000;
-                cursor: pointer;
-            `;
-            
-            modal.innerHTML = `
-                <div style="max-width: 90%; max-height: 90%; position: relative;">
-                    <img src="${imageUrl}" alt="${title}" style="max-width: 100%; max-height: 100%; border-radius: 10px;">
-                    <button onclick="this.parentElement.parentElement.remove()" 
-                            style="position: absolute; top: -10px; right: -10px; background: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 20px;">×</button>
-                </div>
-            `;
-            
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.remove();
+                if (wallpapers && wallpapers.length > 0) {
+                    showStatus('searchStatus', `搜索到 ${wallpapers.length} 张壁纸 (${duration}ms)`, 'success');
+                    displayWallpapers(wallpapers, `搜索: ${keyword}`);
+                } else {
+                    showStatus('searchStatus', '搜索无结果', 'error');
                 }
-            });
-            
-            document.body.appendChild(modal);
-            updateStatus(`👁️ 预览: ${title}`);
+            } catch (error) {
+                showStatus('searchStatus', `错误: ${error.message}`, 'error');
+            }
         }
 
-        // 页面初始化
-        document.addEventListener('DOMContentLoaded', () => {
-            updateStatus("🎨 元气壁纸 ForwardWidget 演示页面已加载");
-            updateStatus("💡 这是符合ForwardWidget标准格式的脚本演示");
-            updateStatus("📱 支持导入到ForwardWidget应用中使用");
-            updateStatus("🛠️ 点击上方按钮测试各项功能");
-            
-            // 显示组件信息
-            if (typeof WidgetMetadata !== 'undefined') {
-                updateStatus(`✅ 组件已加载: ${WidgetMetadata.title} v${WidgetMetadata.version}`);
-            } else {
-                updateStatus("❌ 警告: 未检测到WidgetMetadata对象");
-            }
+        // 页面加载时显示元数据
+        window.addEventListener('load', () => {
+            displayWidgetMetadata();
+            updateStats();
         });
-
-        // 键盘快捷键
-        document.addEventListener('keydown', (event) => {
-            if (event.ctrlKey || event.metaKey) {
-                switch (event.key) {
-                    case '1':
-                        event.preventDefault();
-                        testRandomWallpapers();
-                        break;
-                    case '2':
-                        event.preventDefault();
-                        testCategoryWallpapers();
-                        break;
-                    case '3':
-                        event.preventDefault();
-                        testSearchWallpapers();
-                        break;
-                    case 'i':
-                        event.preventDefault();
-                        showWidgetMetadata();
-                        break;
-                }
-            }
-        });
-
-        // 显示快捷键提示
-        setTimeout(() => {
-            updateStatus("⌨️ 快捷键提示:");
-            updateStatus("   Ctrl+1: 测试随机壁纸");
-            updateStatus("   Ctrl+2: 测试分类壁纸");
-            updateStatus("   Ctrl+3: 测试搜索壁纸");
-            updateStatus("   Ctrl+I: 查看组件信息");
-        }, 1000);
     </script>
 </body>
 </html>
