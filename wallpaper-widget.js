@@ -9,7 +9,7 @@ WidgetMetadata = {
   id: "pexels_wallpaper",
   title: "Pexels动态壁纸",
   description: "基于Pexels API的高质量动态壁纸组件，支持随机获取和内容搜索",
-  author: "ForwardWidget Team",
+  author: "VEUS.5",
   site: "https://github.com/ForwardWidget/pexels-wallpaper",
   version: "2.0.0",
   requiredVersion: "0.0.1",
