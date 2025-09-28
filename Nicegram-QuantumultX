@@ -3,13 +3,13 @@
 
 [rewrite_local]
 # 用户信息解锁 - 解锁Plus订阅功能
-^https://nicegram\.cloud/api/v7/user/info url script-response-body nicegram_userinfo.js
+^https://nicegram\.cloud/api/v7/user/info url script-response-body https://raw.githubusercontent.com/MrRegret/-/refs/heads/master/nicegram_userinfo.js
 
 # ATT积分修改
-^https://nicegram\.cloud/api/v7/att/scroll-to-earn/user-info url script-response-body nicegram_attinfo.js
+^https://nicegram\.cloud/api/v7/att/scroll-to-earn/user-info url script-response-body https://github.com/MrRegret/-/raw/refs/heads/master/nicegram_attinfo.js
 
 # 清空广告列表
-^https://nicegram\.cloud/api/v7/att/scroll-to-earn/ads-list url script-response-body nicegram_adslist.js
+^https://nicegram\.cloud/api/v7/att/scroll-to-earn/ads-list url script-response-body https://github.com/MrRegret/-/raw/refs/heads/master/nicegram_adslist.js
 
 [filter_local]
 # 拦截广告相关域名
