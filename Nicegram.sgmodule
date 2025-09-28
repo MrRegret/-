@@ -1,0 +1,37 @@
+#!name=Nicegram 去广告（Surge 5 模块）
+#!desc=移除 Nicegram 广告与 ATT 上报，伪造订阅/积分信息
+#!icon=https://raw.githubusercontent.com/ImYrS/rules/refs/heads/main/plugins/nicergram/nicegram.jpg
+#!author=ImYrS (converted for Surge 5)
+#!category=Enhancements
+#!arguments=disable_att:bool:false
+
+[Rule]
+# 拦截域名 / URL（直接拒绝）
+DOMAIN-KEYWORD,nicegram.github.io,REJECT
+DOMAIN-SUFFIX,adsgram.me,REJECT
+DOMAIN-SUFFIX,adsgram.ai,REJECT
+DOMAIN-SUFFIX,app-analytics-services.com,REJECT
+# 精确拦截 ATT 活动上报（可通过 arguments:disable_att 控制是否生效；在模块中默认生效）
+URL-REGEX,^https:\/\/nicegram\.cloud\/api\/v7\/att\/user-action,REJECT
+
+[URL Rewrite]
+# 将 ads-list 接口的返回 data 改为空数组（移除广告列表）
+^https:\/\/nicegram\.cloud\/api\/v7\/att\/scroll-to-earn\/ads-list(?:\?.*)?$ response-body-replace data []
+
+# 将 user-info 的 data.attPoints 替为大数字（伪造积分）
+^https:\/\/nicegram\.cloud\/api\/v7\/att\/scroll-to-earn\/user-info response-body-replace data\.attPoints 888888888
+
+# 将 /user/info 中的用户订阅/会员字段都置为 true（伪造已订阅状态）
+^https:\/\/nicegram\.cloud\/api\/v7\/user\/info response-body-replace data\.user\.subscriptionPlus true
+^https:\/\/nicegram\.cloud\/api\/v7\/user\/info response-body-replace data\.user\.store_subscription true
+^https:\/\/nicegram\.cloud\/api\/v7\/user\/info response-body-replace data\.user\.subscription true
+^https:\/\/nicegram\.cloud\/api\/v7\/user\/info response-body-replace data\.user\.lifetime_subscription true
+
+[MITM]
+# Surge 需要对 nicegram.cloud 做 HTTPS 解密以便修改响应体
+hostname = nicegram.cloud
+tcp-connection = true
+h2 = true
+
+# 可选说明（用户可在 Surge 中手动启/禁此模块或修改 Arguments）
+# 若你希望在模块中把 disable_att 做成开关：导入后在 Surge UI 的模块设置里将 disable_att=true/false
