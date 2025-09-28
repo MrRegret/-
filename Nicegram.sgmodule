@@ -1,5 +1,5 @@
 #!name=Nicegram 去广告
-#!desc=移除消息流和置顶广告，拦截 ATT 活动上报 (简化版本)
+#!desc=移除消息流和置顶广告，拦截 ATT 活动上报 
 #!system=mac
 
 [Rule]
@@ -12,8 +12,14 @@ DOMAIN-SUFFIX,app-analytics-services.com,REJECT
 URL-REGEX,^https://nicegram\.cloud/api/v7/att/user-action,REJECT
 
 [Script]
-# 一个脚本处理所有nicegram.cloud的响应修改
-nicegram-modifier = type=http-response, pattern=^https://nicegram\.cloud/api/v7/(user/info|att/scroll-to-earn/(user-info|ads-list)), script-path=data:text/plain;base64,Ly8gTmljZWdyYW0g57uf5LiA6ISa5pysCmxldCBib2R5ID0gJHJlc3BvbnNlLmJvZHk7CmxldCB1cmwgPSAkcmVxdWVzdC51cmw7CgppZiAoYm9keSkgewogICAgdHJ5IHsKICAgICAgICBsZXQgb2JqID0gSlNPTi5wYXJzZShib2R5KTsKICAgICAgICAKICAgICAgICAvLyDnlKjmiLfkv6Hmga/op6PplIEKICAgICAgICBpZiAodXJsLmluY2x1ZGVzKCcvdXNlci9pbmZvJykgJiYgb2JqLmRhdGEgJiYgb2JqLmRhdGEudXNlcikgewogICAgICAgICAgICBvYmouZGF0YS51c2VyLnN1YnNjcmlwdGlvblBsdXMgPSB0cnVlOwogICAgICAgICAgICBvYmouZGF0YS51c2VyLnN0b3JlX3N1YnNjcmlwdGlvbiA9IHRydWU7CiAgICAgICAgICAgIG9iai5kYXRhLnVzZXIuc3Vic2NyaXB0aW9uID0gdHJ1ZTsKICAgICAgICAgICAgb2JqLmRhdGEudXNlci5saWZldGltZV9zdWJzY3JpcHRpb24gPSB0cnVlOwogICAgICAgICAgICBjb25zb2xlLmxvZygiTmljZWdyYW0g55So5oi36Kej6ZSB5oiQ5YqfIik7CiAgICAgICAgfQogICAgICAgIAogICAgICAgIC8vIEFUVOepr+WIhuS/ruaUuQogICAgICAgIGVsc2UgaWYgKHVybC5pbmNsdWRlcygnL3VzZXItaW5mbycpICYmIG9iai5kYXRhKSB7CiAgICAgICAgICAgIG9iai5kYXRhLmF0dFBvaW50cyA9IDg4ODg4ODg4ODsKICAgICAgICAgICAgY29uc29sZS5sb2coIk5pY2VncmFtIEFUVOepr+WIhuS/ruaUueaIkOWKnyIpOwogICAgICAgIH0KICAgICAgICAKICAgICAgICAvLyDmuIXnqbrlub/lkYrliJfooagKICAgICAgICBlbHNlIGlmICh1cmwuaW5jbHVkZXMoJy9hZHMtbGlzdCcpICYmIG9iai5kYXRhKSB7CiAgICAgICAgICAgIG9iai5kYXRhID0gW107CiAgICAgICAgICAgIGNvbnNvbGUubG9nKCJOaWNlZ3JhbSDlub/lkYrmuIXnqbrmiJDlip8iKTsKICAgICAgICB9CiAgICAgICAgCiAgICAgICAgJGRvbmUoe2JvZHk6IEpTT04uc3RyaW5naWZ5KG9iail9KTsKICAgIH0gY2F0Y2ggKGUpIHsKICAgICAgICBjb25zb2xlLmxvZygiTmljZWdyYW0g6ISa5pys6ZSZ6K+vOiAiICsgZSk7CiAgICAgICAgJGRvbmUoe30pOwogICAgfQp9IGVsc2UgewogICAgJGRvbmUoe30pOwp9, requires-body=true
+# 用户信息解锁脚本
+nicegram-unlock = type=http-response, pattern=^https://nicegram\.cloud/api/v7/user/info, script-path=nicegram_userinfo.js, requires-body=true
+
+# ATT积分修改脚本  
+nicegram-points = type=http-response, pattern=^https://nicegram\.cloud/api/v7/att/scroll-to-earn/user-info, script-path=nicegram_attinfo.js, requires-body=true
+
+# 广告列表清空脚本
+nicegram-adslist = type=http-response, pattern=^https://nicegram\.cloud/api/v7/att/scroll-to-earn/ads-list, script-path=nicegram_adslist.js, requires-body=true
 
 [MITM]
 hostname = %APPEND% nicegram.cloud
