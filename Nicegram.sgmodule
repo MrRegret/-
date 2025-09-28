@@ -1,37 +1,29 @@
-#!name=Nicegram 去广告（Surge 5 模块）
-#!desc=移除 Nicegram 广告与 ATT 上报，伪造订阅/积分信息
-#!icon=https://raw.githubusercontent.com/ImYrS/rules/refs/heads/main/plugins/nicergram/nicegram.jpg
-#!author=ImYrS (converted for Surge 5)
-#!category=Enhancements
-#!arguments=disable_att:bool:false
+#!name=Nicegram 去广告
+#!desc=移除消息流和置顶广告，拦截 ATT 活动上报 (Surge版本)
+#!system=mac
 
 [Rule]
-# 拦截域名 / URL（直接拒绝）
+# 拦截广告相关域名
 DOMAIN-KEYWORD,nicegram.github.io,REJECT
 DOMAIN-SUFFIX,adsgram.me,REJECT
-DOMAIN-SUFFIX,adsgram.ai,REJECT
+DOMAIN-SUFFIX,adsgram.ai,REJECT  
 DOMAIN-SUFFIX,app-analytics-services.com,REJECT
-# 精确拦截 ATT 活动上报（可通过 arguments:disable_att 控制是否生效；在模块中默认生效）
-URL-REGEX,^https:\/\/nicegram\.cloud\/api\/v7\/att\/user-action,REJECT
+# 拦截ATT用户行为上报
+URL-REGEX,^https://nicegram\.cloud/api/v7/att/user-action.*,REJECT
 
 [URL Rewrite]
-# 将 ads-list 接口的返回 data 改为空数组（移除广告列表）
-^https:\/\/nicegram\.cloud\/api\/v7\/att\/scroll-to-earn\/ads-list(?:\?.*)?$ response-body-replace data []
+# 清空广告列表
+^https://nicegram\.cloud/api/v7/att/scroll-to-earn/ads-list(\?.*)?$ - reject
 
-# 将 user-info 的 data.attPoints 替为大数字（伪造积分）
-^https:\/\/nicegram\.cloud\/api\/v7\/att\/scroll-to-earn\/user-info response-body-replace data\.attPoints 888888888
+[Script]
+# 修改用户信息，解锁订阅功能
+nicegram_userinfo = type=http-response,pattern=^https://nicegram\.cloud/api/v7/user/info,requires-body=1,max-size=0,script-path=data:text/plain;base64,LyoqCiAqIE5pY2VncmFt55So5oi35L+h5oGv6Kej6ZSB6ISa5pysIC0gU3VyZ2XniYjmnKwKICog6Kej6ZSBUGx1c+iuouWIheWKn+iDvQogKi8KCmxldCBib2R5ID0gJHJlc3BvbnNlLmJvZHk7CmxldCBvYmogPSBKU09OLnBhcnNlKGJvZHkpOwoKaWYgKG9iai5kYXRhICYmIG9iai5kYXRhLnVzZXIpIHsKICAgIG9iai5kYXRhLnVzZXIuc3Vic2NyaXB0aW9uUGx1cyA9IHRydWU7CiAgICBvYmouZGF0YS51c2VyLnN0b3JlX3N1YnNjcmlwdGlvbiA9IHRydWU7CiAgICBvYmouZGF0YS51c2VyLnN1YnNjcmlwdGlvbiA9IHRydWU7CiAgICBvYmouZGF0YS51c2VyLmxpZmV0aW1lX3N1YnNjcmlwdGlvbiA9IHRydWU7Cn0KCiRkb25lKHtib2R5OiBKU09OLnN0cmluZ2lmeShvYmopfSk7
 
-# 将 /user/info 中的用户订阅/会员字段都置为 true（伪造已订阅状态）
-^https:\/\/nicegram\.cloud\/api\/v7\/user\/info response-body-replace data\.user\.subscriptionPlus true
-^https:\/\/nicegram\.cloud\/api\/v7\/user\/info response-body-replace data\.user\.store_subscription true
-^https:\/\/nicegram\.cloud\/api\/v7\/user\/info response-body-replace data\.user\.subscription true
-^https:\/\/nicegram\.cloud\/api\/v7\/user\/info response-body-replace data\.user\.lifetime_subscription true
+# 修改ATT积分
+nicegram_attinfo = type=http-response,pattern=^https://nicegram\.cloud/api/v7/att/scroll-to-earn/user-info,requires-body=1,max-size=0,script-path=data:text/plain;base64,LyoqCiAqIE5pY2VncmFtIEFUVOepr+WIhuS/ruaUueiEmuacrCAtIFN1cmdl54mI5pysQogKICog5L+u5pS5QVRUeei3r+WIhuS4ujg4ODg4ODg4OAogKi8KCmxldCBib2R5ID0gJHJlc3BvbnNlLmJvZHk7CmxldCBvYmogPSBKU09OLnBhcnNlKGJvZHkpOwoKaWYgKG9iai5kYXRhKSB7CiAgICBvYmouZGF0YS5hdHRQb2ludHMgPSA4ODg4ODg4ODg7Cn0KCiRkb25lKHtib2R5OiBKU09OLnN0cmluZ2lmeShvYmopfSk7
+
+# 清空广告列表  
+nicegram_adslist = type=http-response,pattern=^https://nicegram\.cloud/api/v7/att/scroll-to-earn/ads-list,requires-body=1,max-size=0,script-path=data:text/plain;base64,LyoqCiAqIE5pY2VncmFt5bm/5ZGK5YiX6KGo5riF56m66ISa5pysIC0gU3VyZ2XniYjmnKwKICog5riF56m65bm/5ZGK5YiX6KGoQggKICovCgpsZXQgYm9keSA9ICRyZXNwb25zZS5ib2R5OwpsZXQgb2JqID0gSlNPTi5wYXJzZShib2R5KTsKCmlmIChvYmouZGF0YSkgewogICAgb2JqLmRhdGEgPSBbXTsKfQoKJGRvbmUoe2JvZHk6IEpTT04uc3RyaW5naWZ5KG9iail9KTs=
 
 [MITM]
-# Surge 需要对 nicegram.cloud 做 HTTPS 解密以便修改响应体
-hostname = nicegram.cloud
-tcp-connection = true
-h2 = true
-
-# 可选说明（用户可在 Surge 中手动启/禁此模块或修改 Arguments）
-# 若你希望在模块中把 disable_att 做成开关：导入后在 Surge UI 的模块设置里将 disable_att=true/false
+hostname = %APPEND% nicegram.cloud
