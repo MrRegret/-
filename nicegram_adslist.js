@@ -3,7 +3,7 @@
  * Nicegram广告列表清空脚本
  * 兼容 Surge 和 QuantumultX
  * 清空广告列表
-
+ */
 
 let body = $response.body;
 
