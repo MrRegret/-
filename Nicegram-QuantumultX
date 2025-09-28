@@ -1,0 +1,25 @@
+# Nicegram 去广告 - QuantumultX版本
+# 移除消息流和置顶广告，拦截 ATT 活动上报
+
+[rewrite_local]
+# 用户信息解锁 - 解锁Plus订阅功能
+^https://nicegram\.cloud/api/v7/user/info url script-response-body nicegram_userinfo.js
+
+# ATT积分修改
+^https://nicegram\.cloud/api/v7/att/scroll-to-earn/user-info url script-response-body nicegram_attinfo.js
+
+# 清空广告列表
+^https://nicegram\.cloud/api/v7/att/scroll-to-earn/ads-list url script-response-body nicegram_adslist.js
+
+[filter_local]
+# 拦截广告相关域名
+host-keyword, nicegram.github.io, reject
+host-suffix, adsgram.me, reject
+host-suffix, adsgram.ai, reject
+host-suffix, app-analytics-services.com, reject
+
+# 拦截ATT用户行为上报
+host, nicegram.cloud, reject, ^https://nicegram\.cloud/api/v7/att/user-action
+
+[mitm]
+hostname = nicegram.cloud
