@@ -16,8 +16,9 @@ if (body) {
             obj.data.user.store_subscription = true;
             obj.data.user.subscription = true;
             obj.data.user.lifetime_subscription = true;
+            obj.data.user.gems_balance = 99999;
             
-            console.log("✅ Nicegram 用户信息解锁成功");
+            console.log("✅ Nicegram 用户信息解锁成功 - 宝石余额: " + obj.data.user.gems_balance);
         }
         
         $done({ body: JSON.stringify(obj) });
